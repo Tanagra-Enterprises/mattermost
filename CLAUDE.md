@@ -2,6 +2,33 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Claude Code Sandbox Environment
+
+**IMPORTANT: This is a supplemental development tool, NOT part of the Mattermost application codebase.**
+
+The `.claude/` directory contains configuration for Claude Code's containerized sandbox environment. This tooling exists purely to provide Claude with a consistent execution environment and is separate from the core Mattermost application.
+
+### Sandbox Technical Stack
+- **Base Image**: Node.js on Alpine Linux
+- **Build Tools**: Complete C/C++ build toolchain (gcc, g++, make)
+- **Native Module Support**: Python3, node-gyp, and native library dependencies
+- **Canvas Dependencies**: Cairo, Pango, JPEG, PNG, SVG libraries for HTML5 Canvas support
+- **Go Runtime**: Matches Mattermost server requirements
+- **Isolated User**: Non-root claude user (UID 1001) with restricted permissions
+
+### Sandbox Configuration Files
+- `.claude/Dockerfile` - Container image definition (development tool only)
+- `.claude/docker-compose.yaml` - Container orchestration (development tool only)
+- `.claude/settings.local.json` - Claude Code settings (development tool only)
+
+### Session Context
+- **THIS SESSION IS RUNNING INSIDE THE CONTAINER** - Launched by running `./claude`
+- All commands and operations happen within this containerized sandbox
+- Changes to `.claude/Dockerfile` require container rebuilds to take effect
+- The sandbox provides Claude with a consistent environment independent of the host system
+
+# Mattermost
+
 ## Architecture Overview
 
 Mattermost is an open-source collaboration platform built on a Go backend and React frontend, designed for team communication and workflow automation.

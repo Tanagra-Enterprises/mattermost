@@ -3,7 +3,10 @@ services:
   claude:
     build:
       context: ..
-      dockerfile: .claude/Dockerfile.claude
+      dockerfile: .claude/Dockerfile
+      args:
+        - NODE_VERSION=${NODE_VERSION}
+        - GO_VERSION=${GO_VERSION}
     container_name: claude
     environment:
       - TZ=${TZ:-UTC}
@@ -15,5 +18,9 @@ services:
       start_period: 10s
     volumes:
       - ..:/workspace
+      - claude-data:/home/claude
     working_dir: /workspace
     restart: unless-stopped
+
+volumes:
+  claude-data:
