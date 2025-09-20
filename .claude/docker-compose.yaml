@@ -1,0 +1,19 @@
+services:
+
+  claude:
+    build:
+      context: ..
+      dockerfile: .claude/Dockerfile.claude
+    container_name: claude
+    environment:
+      - TZ=${TZ:-UTC}
+    healthcheck:
+      test: ["CMD", "ps", "aux"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    volumes:
+      - ..:/workspace
+    working_dir: /workspace
+    restart: unless-stopped
