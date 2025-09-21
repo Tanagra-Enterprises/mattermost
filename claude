@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# claude - Enter claude-code container, cd to workspace, and start Claude Code CLI
+# Usage: ./claude
+
+# Read version files - error if they don't exist
+if [ ! -f .nvmrc ]; then
+    echo "Error: .nvmrc file not found"
+    exit 1
+fi
+
+if [ ! -f server/.go-version ]; then
+    echo "Error: server/.go-version file not found"
+    exit 1
+fi
+
+# Extract bare node major version e.g. 20
+NODE_VERSION=$(cat .nvmrc | sed 's/^v//' | cut -d. -f1)
+# Extract go version e.g. 1.21
+GO_VERSION=$(cat server/.go-version)
+
+# Set environment variables for docker-compose
+export NODE_VERSION="$NODE_VERSION"
+export GO_VERSION="$GO_VERSION"
+
+# Use docker-compose to build and run the container
+cd .claude
+docker compose build
+docker compose up -d
+# clear the terminal
+clear
+
+# Function to handle cleanup on exit
+cleanup() {
+    echo "Stopping docker compose..."
+    docker compose stop
+}
+
+# Set trap to run cleanup on exit
+trap cleanup EXIT
+
+# Enter the running container
+docker compose exec claude claude
